@@ -1,15 +1,18 @@
-const enum EColors {
-  Red = 'red',
-  Blue = 'blue',
-  Green = 'green',
-  Yellow = 'yellow',
-  Black = 'black'
-}
+import { EColors, RGB } from './types';
+
+type TOnClick = (color: RGB) => void;
 
 export const CanvasA = class {
   private element: HTMLCanvasElement;
 
   private context: CanvasRenderingContext2D;
+
+  private onClick: TOnClick;
+
+  constructor(onClick: TOnClick) {
+    this.onClick = onClick;
+    this.handleClick = this.handleClick.bind(this);
+  }
 
   private drawStar(cx: number, cy: number, color: EColors) {
     const cornerCount = 5;
@@ -71,11 +74,26 @@ export const CanvasA = class {
     stars.forEach(item => this.drawStar(item.x, item.y, item.color));
   }
 
+  private getColor(e: MouseEvent) {
+    const x = e.offsetX;
+    const y = e.offsetY;
+    const { data } = this.context.getImageData(x, y, 1, 1);
+    if (data[data.length - 1] === 0) {
+      return `rgb(255, 255, 255)` as RGB;
+    }
+    return `rgb(${data.slice(0, 3).join(',')})` as RGB;
+  }
+
+  private handleClick(e: MouseEvent) {
+    this.onClick(this.getColor(e));
+  }
+
   public init(selector) {
     this.element = document.querySelector(selector);
     this.element.width = 600;
     this.element.height = 600;
     this.context = this.element.getContext('2d');
     this.drawAll();
+    this.element.addEventListener('click', this.handleClick);
   }
 };

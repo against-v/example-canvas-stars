@@ -1,0 +1,6 @@
+.root {
+    text-align: center;
+}
+#canvas-a, #canvas-b {
+    border: 1px solid black;
+}
