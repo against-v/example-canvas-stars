@@ -1,5 +1,6 @@
 .root {
-    text-align: center;
+    width: 600px;
+    margin: 0 auto;
 }
 #canvas-a, #canvas-b {
     border: 1px solid black;
